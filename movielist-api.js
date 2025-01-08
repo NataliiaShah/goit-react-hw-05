@@ -1,49 +1,41 @@
-import axios from "axios";
-const TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3OWI4NmViYWIzMzMxNDdhYTA2YjlhODk5YjY0YzYxNCIsInN1YiI6IjY1ZTc2YjQ4MzFkMDliMDE2MmUzMWE5ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.AB-5VH5rmU095UcQzHVjMm3vM3utfCAE_YAytC-tzY0'
 
-export const getFilmsTrendingAccess = async () => {
-    const url = `https://api.themoviedb.org/3/trending/movie/day?language=en-US`;
-    const params = {
-        headers: {
-            Authorization: `Bearer ${TOKEN}`
-        }
-    }
-    try {
-        const respons = await axios.get(url, params);
-        return respons.data.results;
-    } catch (error) {
-        console.log(error.message);
-    }
-}
+import axios from 'axios';
 
-export const getFilmsDetails = async (id, codeWord = '') => {
-    const url = `https://api.themoviedb.org/3/movie/${id}${codeWord}?language=en-US`;
-    const params = {
-        headers: {
-            Authorization: `Bearer ${TOKEN}`
-        }
-    }
-    try {
-        const respons = await axios.get(url, params);
+const API_TOKEN = '8aba4e3419a44727b7eb66f35fce4fa2';
+const BASE_URL = 'https://api.themoviedb.org/3';
 
-        return respons.data;
-    } catch (error) {
-        console.log(error.message);
-    }
-}
+const instance = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    Authorization: `Bearer ${API_TOKEN}`,
+  },
+});
 
-export const getFilmsSearch = async (query, page = 1) => {
-    const url = `https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=false&language=en-US&page=${page}`;
-    const params = {
-        headers: {
-            Authorization: `Bearer ${TOKEN}`
-        }
-    }
-    try {
-        const respons = await axios.get(url, params);
-        return respons.data;
+export const fetchTrendingMovies = async page => {
+  const { data } = await instance.get('/trending/movie/day', {
+    params: { page },
+  });
+  return { movies: data.results, totalPages: data.total_pages };
+};
 
-    } catch (error) {
-        console.log(error.message);
-    }
-}
+export const fetchSearchMovies = async (query, page) => {
+  const { data } = await instance.get('/search/movie', {
+    params: { query, page, language: 'en-US' },
+  });
+  return { movies: data.results, totalPages: data.total_pages };
+};
+
+export const fetchMovieDetails = async movieId => {
+  const { data } = await instance.get(`/movie/${movieId}`);
+  return data;
+};
+
+export const fetchMovieCast = async movieId => {
+  const { data } = await instance.get(`/movie/${movieId}/credits`);
+  return data.cast;
+};
+
+export const fetchMovieReviews = async movieId => {
+  const { data } = await instance.get(`/movie/${movieId}/reviews`);
+  return data.results;
+};
