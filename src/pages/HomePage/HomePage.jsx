@@ -1,8 +1,14 @@
+
+
 const HomePage = () => {
-    return(
-        <>
-        </>
-    )
+
+
+  return (
+    <div>
+      <h1>Trending Movies</h1>
+      
+    </div>
+  );
 };
 
 export default HomePage;

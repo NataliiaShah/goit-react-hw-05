@@ -1,8 +1,14 @@
+
+
 const MoviesPage = () => {
-    return(
-        <>
-        </>
-    )
+
+
+  return (
+    <div>
+      <h1>Search Movies</h1>
+     
+    </div>
+  );
 };
 
 export default MoviesPage;
